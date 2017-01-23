@@ -12,3 +12,4 @@
 /web/media/
 app/data.db3
 .idea
+/web/js/compiled/
