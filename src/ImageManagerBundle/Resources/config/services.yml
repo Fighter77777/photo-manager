@@ -1,0 +1,10 @@
+parameters:
+  image_manager.dir_for_loaded_files: '/uploads'
+
+services:
+    image_manager.file_loader:
+        class: ImageManagerBundle\Utils\FileLoader
+        arguments: ["%kernel.root_dir%"]
+    image_manager.file_manager:
+        class: ImageManagerBundle\Utils\FilesManager
+        arguments: ["@image_manager.file_loader", "%image_manager.dir_for_loaded_files%"]

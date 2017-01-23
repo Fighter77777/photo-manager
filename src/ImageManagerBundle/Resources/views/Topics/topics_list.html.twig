@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="topics-list">
+        {% for topic in topics %}
+            {% include 'ImageManagerBundle:Topics:topic.html.twig' %}
+        {% endfor %}
+    </div>
+{% endblock %}

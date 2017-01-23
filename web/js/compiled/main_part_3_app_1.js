@@ -1,0 +1,1 @@
+var imgApp = angular.module('imgApp', ['ngResource']);

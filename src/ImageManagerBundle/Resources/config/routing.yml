@@ -1,0 +1,20 @@
+image_manager_homepage:
+    path:     /
+    defaults: { _controller: ImageManagerBundle:Default:index }
+
+image_manager_topics_list:
+    path:     /topics
+    defaults: { _controller: ImageManagerBundle:Topics:getTopics }
+    methods: [GET]
+
+image_manager_add_topics:
+    path:     /topics
+    defaults: { _controller: ImageManagerBundle:Topics:postTopics }
+    methods: [POST]
+
+image_manager_get_topic:
+    path:     /topics/{id}
+    defaults: { _controller: ImageManagerBundle:Topics:getTopic }
+    methods: [GET]
+    requirements:
+        id: "\d+"

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="page-name">Менеджер фото</h1>
+    <main ng-app="imgApp" ng-controller="MainController">
+        <section class="img-loader" ng-controller="ImgLoaderController" ng-init="init()">
+            {{ form_start(newTopicForm, {'attr': {'data-ng-submit': 'submit($event.preventDefault())'} }) }}
+                {{ form_label(newTopicForm.imgPath) }}
+                {{ form_errors(newTopicForm.imgPath) }}
+                {{ form_widget(newTopicForm.imgPath) }}
+
+                <input type="submit" value="Завантажити" />
+            {{ form_end(newTopicForm) }}
+        </section>
+
+        <section class="img-viewer" ng-controller="ImgViewerController">
+            <div class="img-search">
+                <input id="searchPhoto" type="text" placeholder="пошук фото по тегам" ng-model="searchPhoto">
+            </div>
+
+            <div class="content">
+                <div class="topics-list">
+                    <div class="topics-element" ng-repeat="topic in topicPager.list | topicFilter:searchPhoto">
+                        <img ng-src="{{ '{{topic.img_path}}' }}" class="topic-img">
+                        <ul class="tags">
+                            <li class="tag" ng-repeat="tag in topic.topics_tags">{{ '{{tag.name}}' }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <pagination count="topicPager.data.length" take="topicPager.take" activate="topicPager.activate"
+                            max-size="topicPager.maxSize" hide-arrows="false">
+                </pagination>
+
+            </div>
+        </section>
+    </main>
+{% endblock %}
+

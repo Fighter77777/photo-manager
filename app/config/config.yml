@@ -1,0 +1,227 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: ru
+
+framework:
+    #esi:             ~
+    translator:      { fallbacks: ["%locale%"] }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    #serializer:      { enable_annotations: true }
+    templating:
+        engines: ['twig', 'php']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
+
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        [ LiipHelloBundle ]
+    #java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: "%kernel.root_dir%/Resources/java/compiler.jar"
+        #yui_css:
+        #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        path:     "%database_path%"
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                auto_mapping: true
+                mappings:
+                    AppBundle:  ~
+            customer:
+                connection: default
+                mappings:
+                    FOSUserBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: Liip\HelloBundle\Entity\User
+
+fos_rest:
+    view:
+#        default_engine: php
+        view_response_listener: force
+        force_redirects:
+          html: true
+#          xml: true
+        formats:
+            jsonp: true
+            json: true
+            xml: true
+            rss: false
+        templating_formats:
+            html: true
+        mime_types:
+            json: ['application/json', 'application/x-json', 'application/vnd.example-com.foo+json']
+            rss: 'application/rss+xml'
+            jpg: 'image/jpeg'
+            png: 'image/png'
+        jsonp_handler: ~
+    body_listener: true
+    param_fetcher_listener: force
+    allowed_methods_listener: true
+    access_denied_listener:
+        json: true
+    format_listener:
+        rules:
+            - { path: ^/liip/hello/rest, priorities: [html, json, xml], fallback_format: ~, prefer_extension: false }
+            # force rss
+            - { path: ^/liip/customHandler, fallback_format: rss }
+            # force jsonp, return a 406 on a non jsonp request
+            - { path: ^/liip/jsonp, priorities: [jsonp], fallback_format: false, prefer_extension: true }
+            - { path: ^/, priorities: [ html, json, xml ], fallback_format: ~, prefer_extension: true }
+    routing_loader:
+        default_format: ~
+    exception:
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
+    service:
+        view_handler: liip_hello.view_handler
+    serializer:
+#        version: 1.0
+#        groups: [data]
+
+doctrine_phpcr:
+    session:
+        backend:
+            type: doctrinedbal
+            connection: default
+#            type: jackrabbit
+#            url: http://localhost:8080/server/
+#            disable_stream_wrapper: true
+        workspace: default
+        username: admin
+        password: admin
+        options:
+            'jackalope.fetch_depth': 1
+    odm:
+        auto_generate_proxy_classes: %kernel.debug%
+        mappings:
+            LiipHelloBundle: true
+
+sensio_framework_extra:
+    view:    { annotations: false }
+    router:  { annotations: true }
+    request: { converters: true }
+
+liip_container_wrapper:
+    disable_optimization: false
+
+fos_http_cache:
+#    cache_control:
+#        rules:
+#            - { path: /, controls: { public: true, max_age: 15, s_maxage: 30, last_modified: "-1 hour" } }
+#    proxy_client:
+#        varnish:
+#            base_url: http://symfony-standard.lo
+#            servers: 10.0.0.10:80, 10.0.0.11:80 # comma separated list of ips/ports, or an array of ips/ports
+    flash_message: false
+
+liip_hyphenator:
+    default_locale: de_DE
+    hyphen: '&shy;'
+
+liip_theme:
+    themes: ['desktop', 'tablet', 'phone']
+    active_theme: 'desktop'
+    cookie:
+        name: 'device'
+    autodetect_theme: true
+
+liip_imagine:
+    filter_sets:
+        my_thumb:
+            quality: 50
+            filters:
+                thumbnail: { size: [120, 90], mode: outbound }
+
+        my_thumb_resize:
+            quality: 50
+            cache: false
+            filters:
+                thumbnail: { size: [120, 90], mode: outbound }
+                relative_resize: { heighten: 78 }
+
+liip_monitor:
+    enable_controller: true
+    checks:
+        php_extensions: [pdo, gd]
+        security_advisory: ~
+        custom_error_pages:
+            error_codes: [500, 404]
+
+liip_translation:
+    locale_list: [ru, en_US, en, fr_CH, fr]
+    persistence:
+        class: Liip\TranslationBundle\Persistence\YamlFilePersistence
+        options:
+            folder: "%kernel.root_dir%/data/translations"
+    interface:
+        default_filters:
+          domain: ['messages']
+          languages: ['ru', 'en']
+
+liip_search:
+    clients:
+        google_cse:
+            cse_id: "%google_search_api_key%"

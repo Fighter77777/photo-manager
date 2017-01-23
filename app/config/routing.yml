@@ -1,0 +1,7 @@
+image_manager:
+    resource: "@ImageManagerBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
